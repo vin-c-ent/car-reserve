@@ -8,5 +8,5 @@ public class CommonConstants {
     public static final String SUCCESS = "success";
     public static final String FAIL = "fail";
 
-    public static final String YYYYMMDD = "yyyyMMdd";
+    public static final String YYYYMMDD = "yyyy-MM-dd";
 }

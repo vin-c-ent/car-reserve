@@ -11,40 +11,59 @@
         brandChange();
       });
 
+      /* exception handling */
+      function errorHandling(errorResponse) {
+        var errorMessage = "hitting exception : ";
+        if (errorResponse) {
+          errorMessage +=
+            errorResponse.errorCode + "-" + errorResponse.errorMessage;
+        }
+        alert(errorMessage);
+      }
+
       function brandChange() {
         console.log("selected brand id : " + $("#brand").val());
 
         /* ajax call */
         var modelListUrl = "/brand/" + $("#brand").val() + "/models";
-        modelListResponse = $.ajax({ url: modelListUrl, async: false });
-
-        if (modelListResponse.responseJSON.status != "success") {
-          /* exception handling */
-          var errorMessage = "hitting exception : ";
-          var errorResponse = modelListResponse.responseJSON.error;
-          if (errorResponse) {
-            errorMessage +=
-              errorResponse.errorCode + "-" + errorResponse.errorMessage;
-          }
-          alert(errorMessage);
-        } else {
-          /* success : change dom */
-          var modelListHtml;
-          modelListResponse.responseJSON.data.forEach((model) => {
-            modelListHtml +=
-              "<option value ='" +
-              model.modelId +
-              "'>" +
-              model.modelName +
-              "</option>";
-          });
-          $("#model").html(modelListHtml);
-        }
+        $.ajax({
+          type: "GET",
+          url: modelListUrl,
+          async: false,
+          success: function (response) {
+            if (response.status != "success") {
+              errorHandling(response.error);
+            } else {
+              /* success : change dom */
+              var modelListHtml;
+              response.data.forEach((model) => {
+                modelListHtml +=
+                  "<option value ='" +
+                  model.modelId +
+                  "'>" +
+                  model.modelName +
+                  "</option>";
+              });
+              $("#model").html(modelListHtml);
+            }
+          },
+          error: function (XMLHttpRequest, textStatus, errorThrown) {
+            errorHandling(XMLHttpRequest.responseJSON.error);
+          },
+        });
       }
 
       function reserve() {
-        console.info($("#brand").val());
-        console.info($("#model").val());
+        console.info(
+          "reserving : brand : " +
+            $("#brand").val() +
+            ", model : " +
+            $("#model").val() +
+            ", start date : " +
+            $("#start_date").val() +
+            ", end_date : " +
+            $("#end_date").val()
+        );
 
         /* ajax call */
         $.ajax({
@@ -54,24 +73,20 @@
           dataType: "json",
           data: JSON.stringify({
             model_id: $("#model").val(),
-            start_date: "20210427",
-            end_date: "20210428",
+            start_date: $("#start_date").val(),
+            end_date: $("#end_date").val(),
           }),
           success: function (response) {
-            alert('create reserve order : ' + response.data.reserveId + ' successfully!');
+            alert(
+              "create reserve order : " +
+                response.data.reserveId +
+                " successfully!"
+            );
+          },
+          error: function (XMLHttpRequest, textStatus, errorThrown) {
+            errorHandling(XMLHttpRequest.responseJSON.error);
           },
         });
-        /* $.post(
-          url,
-          {
-            model_id: $("#model").val(),
-            start_date: "2020-03-27",
-            start_date: "2020-03-28",
-          },
-          function (data, status) {
-            alert("Data: " + data + "\nStatus: " + status);
-          }
-        ); */
       }
     </script>
   </head>
@@ -87,6 +102,12 @@
 
     <label>Model: </label>
     <select id="model"></select>
+
+    <label for="start_date_label">start date : </label>
+    <input id="start_date" type="date" value="" />
+
+    <label for="end_date_label">end date : </label>
+    <input id="end_date" type="date" value="" />
 
     <button onclick="reserve()">Reserve</button>
   </body>
