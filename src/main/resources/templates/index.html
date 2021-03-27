@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Car Reserve Page</title>
+    <script th:src="@{/js/jquery-3.6.0.js}"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+        console.log("page loaded");
+        brandChange();
+      });
+
+      function brandChange() {
+        console.log("selected brand id : " + $("#brand").val());
+
+        /* ajax call */
+        var modelListUrl = "/brand/" + $("#brand").val() + "/models";
+        modelListResponse = $.ajax({ url: modelListUrl, async: false });
+
+        if (modelListResponse.responseJSON.status != "success") {
+          /* exception handling */
+          var errorMessage = "hitting exception : ";
+          var errorResponse = modelListResponse.responseJSON.error;
+          if (errorResponse) {
+            errorMessage +=
+              errorResponse.errorCode + "-" + errorResponse.errorMessage;
+          }
+          alert(errorMessage);
+        } else {
+          /* success : change dom */
+          var modelListHtml;
+          modelListResponse.responseJSON.data.forEach((model) => {
+            modelListHtml +=
+              "<option value ='" +
+              model.modelId +
+              "'>" +
+              model.modelName +
+              "</option>";
+          });
+          $("#model").html(modelListHtml);
+        }
+      }
+
+      function reserve() {
+        console.info($("#brand").val());
+        console.info($("#model").val());
+
+        /* ajax call */
+        $.ajax({
+          type: "POST",
+          url: "/reserve",
+          contentType: "application/json",
+          dataType: "json",
+          data: JSON.stringify({
+            model_id: $("#model").val(),
+            start_date: "20210427",
+            end_date: "20210428",
+          }),
+          success: function (response) {
+            alert('create reserve order : ' + response.data.reserveId + ' successfully!');
+          },
+        });
+        /* $.post(
+          url,
+          {
+            model_id: $("#model").val(),
+            start_date: "2020-03-27",
+            start_date: "2020-03-28",
+          },
+          function (data, status) {
+            alert("Data: " + data + "\nStatus: " + status);
+          }
+        ); */
+      }
+    </script>
+  </head>
+  <body>
+    <label>Brand: </label>
+    <select id="brand" onchange="brandChange()">
+      <option
+        th:each="brand : ${brandEntityList}"
+        th:value="${brand.id}"
+        th:text="${brand.brandName}"
+      ></option>
+    </select>
+
+    <label>Model: </label>
+    <select id="model"></select>
+
+    <button onclick="reserve()">Reserve</button>
+  </body>
+</html>
