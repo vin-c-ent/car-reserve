@@ -36,6 +36,7 @@ public class ReserveController {
         Long modelId = reserveRequest.getModelId();
         LocalDate startDate = LocalDate.parse(reserveRequest.getStartDate(), DateTimeFormatter.ofPattern(YYYYMMDD));
         LocalDate endDate = LocalDate.parse(reserveRequest.getEndDate(), DateTimeFormatter.ofPattern(YYYYMMDD));
+        log.info("modelId : {}, start date : {}, end date : {}", modelId, startDate, endDate);
 
         this.validateDate(startDate, endDate);
 

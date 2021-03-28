@@ -4,6 +4,7 @@ import com.car.dto.response.BaseResponse;
 import com.car.dto.response.ModelResponse;
 import com.car.entity.ModelEntity;
 import com.car.repository.ModelRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  * @author Vincent
  * @date 2021/03/27
  */
+@Slf4j
 @RestController
 @RequestMapping("/")
 public class CarInfoController {
@@ -28,6 +30,7 @@ public class CarInfoController {
     @GetMapping("/brand/{brand_id}/models")
     public ResponseEntity<BaseResponse<List<ModelResponse>>> getModelListByBrand(@PathVariable("brand_id") String brandId) {
         List<ModelEntity> modelList = modelRepository.findAllByBrandId(Long.valueOf(brandId));
+        log.info("for brand {}, the model list is {}", brandId, modelList);
 
         return ResponseEntity.ok(
                 BaseResponse.success(modelList.stream()

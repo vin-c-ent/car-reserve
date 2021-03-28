@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 
 import static com.car.exception.ReserveExceptionInfoEnums.NO_CAR_IS_AVAILABLE;
 
-@Service
 @Slf4j
+@Service
 public class ReserveService {
 
     @Autowired
@@ -36,6 +36,7 @@ public class ReserveService {
 
         // get car whose model id is match & expire time is valid
         List<CarEntity> carEntityList = this.getAvailableCarByModelId(modelId);
+        log.info("for model {}, available car list is {}", modelId, carEntityList);
 
         // group car entity as a <car id, car entity> map, for using later
         Map<UUID, CarEntity> carIdAndEntityMap = carEntityList.stream()
@@ -50,6 +51,7 @@ public class ReserveService {
         // group the reserve record as a <car id, reserve order> map
         Map<UUID, List<ReserveEntity>> carIdReserveEntityListMap = reserveEntityList.stream()
                 .collect(Collectors.groupingBy(ReserveEntity::getCarId));
+        log.info("reserve entity map : {}", carIdReserveEntityListMap);
 
         // for loop every car
         for (Map.Entry<UUID, List<ReserveEntity>> entry : carIdReserveEntityListMap.entrySet()) {
@@ -67,6 +69,7 @@ public class ReserveService {
 
                 // find the matched car entity
                 CarEntity matchedCarEntity = carIdAndEntityMap.get(carId);
+                log.info("found one matched car : {}", matchedCarEntity);
 
                 // generate the new version
                 UUID newVersion = UUID.randomUUID();
@@ -84,11 +87,13 @@ public class ReserveService {
                     reserveEntity.setStartDate(Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
                     reserveEntity.setEndDate(Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
                     reserveRepository.save(reserveEntity);
+                    log.info("saved into reserve table, id : {}", reserveEntity.getId());
 
                     // release the lock
                     matchedCarEntity.setLockVersion(newVersion);
                     matchedCarEntity.setExpireTime(null);
                     carRepository.save(matchedCarEntity);
+                    log.info("car lock released, current version : {}", newVersion);
                     // response
                     UUID reserveEntityId = reserveEntity.getId();
                     log.info("create reserve order {} successfully", reserveEntityId);
