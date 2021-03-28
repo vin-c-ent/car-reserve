@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+    <appender name="logstash" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <jsonFactoryDecorator class="net.logstash.logback.decorate.CharacterEscapesJsonFactoryDecorator">
+                <escape>
+                    <targetCharacterCode>10</targetCharacterCode>
+                    <escapeSequence>\u2028</escapeSequence>
+                </escape>
+            </jsonFactoryDecorator>
+            <providers>
+                <pattern>
+                    <pattern>
+                        {
+                        "car.log_timestamp":"%date{\"yyyy-MM-dd'T'HH:mm:ss,SSS'Z'\", UTC}",
+                        "car.message":"%message",
+                        "car.logger":"%logger",
+                        "car.level":"%level",
+                        "car.userId":"%mdc{userId}",
+                        "car.request_uri":"%mdc{request_uri}",
+                        "car.status_code":"%mdc{status_code}",
+                        "car.duration":"%mdc{duration}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="logstash"/>
+    </root>
+</configuration>
