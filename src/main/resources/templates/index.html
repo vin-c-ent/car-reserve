@@ -3,6 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <title>Car Reserve Page</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <!-- <script th:src="@{/js/bootstrap.min.js}"></script> -->
     <script th:src="@{/js/jquery-3.6.0.js}"></script>
 
     <script type="text/javascript">
@@ -90,24 +93,35 @@
       }
     </script>
   </head>
-  <body>
-    <label>Brand: </label>
-    <select id="brand" onchange="brandChange()">
-      <option
-        th:each="brand : ${brandEntityList}"
-        th:value="${brand.id}"
-        th:text="${brand.brandName}"
-      ></option>
-    </select>
+  <body style="text-align: center">
+    <h1>Car Reserve Page</h1>
 
-    <label>Model: </label>
-    <select id="model"></select>
-
-    <label for="start_date_label">start date : </label>
-    <input id="start_date" type="date" value="" />
-
-    <label for="end_date_label">end date : </label>
-    <input id="end_date" type="date" value="" />
+    <table border="0" align="center">
+      <tr align="left">
+        <td>Brand</td>
+        <td>
+          <select id="brand" onchange="brandChange()">
+            <option
+              th:each="brand : ${brandEntityList}"
+              th:value="${brand.id}"
+              th:text="${brand.brandName}"
+            ></option>
+          </select>
+        </td>
+      </tr>
+      <tr align="left">
+        <td>Model</td>
+        <td><select id="model"></select></td>
+      </tr>
+      <tr align="left">
+        <td>Start Date</td>
+        <td><input id="start_date" type="date" value="" /></td>
+      </tr>
+      <tr align="left">
+        <td>End Date</td>
+        <td><input id="end_date" type="date" value="" /></td>
+      </tr>
+    </table>
 
     <button onclick="reserve()">Reserve</button>
   </body>
