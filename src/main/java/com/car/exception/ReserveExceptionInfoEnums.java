@@ -7,7 +7,8 @@ package com.car.exception;
 public enum ReserveExceptionInfoEnums implements IExceptionInfo {
     START_DATE_AFTER_END_DATE("301", "start date should be before end date"),
     START_DATE_BEFORE_NOW("302", "start date should be after now"),
-    NO_CAR_IS_AVAILABLE("303", "no car is available in this period");
+    NO_CAR_IS_AVAILABLE("303", "no car is available in this period"),
+    FAIL_TO_RESERVE("304", "fail to reserve for unknown exception");
 
     private String errorCode;
     private String errorMessage;

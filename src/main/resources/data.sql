@@ -34,8 +34,10 @@ VALUES (4, 'Camry', 2);
 
 CREATE TABLE car
 (
-    id       UUID DEFAULT random_uuid(),
-    model_id LONG,
+    id          UUID DEFAULT random_uuid(),
+    model_id    LONG,
+    lock_version  UUID DEFAULT random_uuid(),
+    expire_time TIMESTAMP,
     CONSTRAINT Car_pk PRIMARY KEY (id),
     CONSTRAINT "CAR_MODEL_ID_fk" FOREIGN KEY (model_id) REFERENCES model
 );
