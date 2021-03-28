@@ -25,7 +25,7 @@ public class IndexController {
     private BrandRepository brandRepository;
 
     @GetMapping("/index")
-    public String getAllRatingList(HttpServletRequest request, Map<String, Object> paramMap) {
+    public String getIndex(HttpServletRequest request, Map<String, Object> paramMap) {
         List<BrandEntity> brandEntityList = brandRepository.findAll();
         log.info("init : fetched brand list : {}", brandEntityList);
         paramMap.put("brandEntityList", brandEntityList);

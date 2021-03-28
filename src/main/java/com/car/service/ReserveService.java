@@ -86,7 +86,7 @@ public class ReserveService {
                     reserveEntity.setCarId(carId);
                     reserveEntity.setStartDate(Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
                     reserveEntity.setEndDate(Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-                    reserveRepository.save(reserveEntity);
+                    reserveEntity = reserveRepository.save(reserveEntity);
                     log.info("saved into reserve table, id : {}", reserveEntity.getId());
 
                     // release the lock
